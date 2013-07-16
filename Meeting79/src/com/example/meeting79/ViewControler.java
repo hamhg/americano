@@ -1,5 +1,7 @@
 package com.example.meeting79;
 
+import java.util.ArrayList;
+
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -16,8 +18,10 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 
 import com.example.meeting79.SlideView.SizeCallback;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -33,18 +37,18 @@ public class ViewControler extends Activity {
 	private LocationManager locationManager;
 	private String provider;
 	private LatLng myPos;
+	private GoogleMap map;
 
 	boolean click;
-	private GoogleMap map;
 	
 	SlideView slideView;
-	View menu, app, heart;
+	View menu, app, heart, chat;
+	Button slide, slideHeart, slideChat;
+
 	View[] changeMenu = new View[2];
 	SizeCallbackForMenu size;
 	
 	static boolean menuOut = false;
-	int btnWidth;
-	Button slide, slideHeart;
 
 	LinearLayout menuFind, menuHeart, menuChat, menuProfile, menuContact, menuSetting, menuStore, menuNotice, menuEvent, menuQna, menuHelp;
 	
@@ -65,9 +69,20 @@ public class ViewControler extends Activity {
         menu = inflater.inflate(R.layout.leftmenu, null);
         app = inflater.inflate(R.layout.activity_match, null);
         heart = inflater.inflate(R.layout.activity_heart, null);
+        chat = inflater.inflate(R.layout.activity_chat, null);
         ViewGroup tabBar = (ViewGroup) app.findViewById(R.id.tabBar);
         ViewGroup tabBarHeart = (ViewGroup) heart.findViewById(R.id.tabBarHeart);
+        ViewGroup tabBarChat = (ViewGroup) chat.findViewById(R.id.tabBarChat);
         
+        slide = (Button) tabBar.findViewById(R.id.slide);
+        slideHeart = (Button) tabBarHeart.findViewById(R.id.slideHeart);
+        slideChat = (Button) tabBarChat.findViewById(R.id.slideChat);
+        
+        slide.setOnClickListener(new MenuSlideListener(slideView, menu));
+        slideHeart.setOnClickListener(new MenuSlideListener(slideView, menu));
+        slideChat.setOnClickListener(new MenuSlideListener(slideView, menu));
+        
+        //Leftmenu Event 등록
         menuFind = (LinearLayout) menu.findViewById(R.id.menuFind);
         menuHeart = (LinearLayout) menu.findViewById(R.id.menuHeart);
         menuChat = (LinearLayout) menu.findViewById(R.id.menuChat);
@@ -92,25 +107,28 @@ public class ViewControler extends Activity {
         menuQna.setOnClickListener(menuClickListener);
         menuHelp.setOnClickListener(menuClickListener);
         
-        slide = (Button) tabBar.findViewById(R.id.slide);
-        slideHeart = (Button) tabBarHeart.findViewById(R.id.slideHeart);
-
-        slide.setOnClickListener(new MenuSlideListener(slideView, menu));
-        slideHeart.setOnClickListener(new MenuSlideListener(slideView, menu));
-
-		
-        setMapTransparent((ViewGroup) app);
-        
-        final View[] children = new View[] { menu, app };      
         int scrollToViewIdx = 1;
-        
-        changeMenu[0] = (View) menu;
-
-        size = new SizeCallbackForMenu(slide);
-        
-        slideView.initViews(children, scrollToViewIdx, size); 
+        setMapTransparent((ViewGroup) app); //GoogleMap Background Transparent
         initGmap();
         
+        // 최초 로딩 화면 세팅
+        changeMenu[0] = (View) menu;
+        changeMenu[1] = (View) app;
+        size = new SizeCallbackForMenu(slide);
+        slideView.initViews(changeMenu, scrollToViewIdx, size); 
+        
+		
+		ArrayList<String> list = new ArrayList<String>();
+		list.add("누군가 나에게 하트를 보냈습니다.");
+		list.add("누군가 나에게 하트를 보냈습니다.");
+		list.add("누군가 나에게 하트를 보냈습니다.");
+		list.add("누군가 나에게 하트를 보냈습니다.");
+		list.add("누군가 나에게 하트를 보냈습니다.");
+
+		ArrayAdapter<String> adapter;
+		adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list);
+		ListView listView = (ListView) heart.findViewById(R.id.heartList);
+		listView.setAdapter(adapter);
 	}
 
 	OnClickListener menuClickListener = new OnClickListener() {
@@ -127,7 +145,7 @@ public class ViewControler extends Activity {
 				changeMenu[1] = (View) heart;
 				break;
 			case R.id.menuChat:
-				
+				changeMenu[1] = (View) chat;
 				break;
 			case R.id.menuProfile:
 				
@@ -157,6 +175,7 @@ public class ViewControler extends Activity {
 				break;
 			};
 			slideView.initViews(changeMenu, 1, size);
+			menuOut = false;
 		}
 	};
 	
@@ -180,14 +199,12 @@ public class ViewControler extends Activity {
 			 
 			 if (!menuOut) {
 	                // Scroll to 0 to reveal menu
-	            	Log.d("===slide 1==","Scroll to right");
-	            	Log.d("===clicked 1==","clicked");
+	            	Log.d("===clicked 1==","Scroll to right");
 	                int left = 70;
 	                slideView.smoothScrollTo(left, 0);
 	            } else {
 	                // Scroll to menuWidth so menu isn't on screen.
-	            	Log.d("===slide 2==","Scroll to left");
-	            	Log.d("===clicked 2==","clicked");
+	            	Log.d("===clicked 2==","Scroll to left");
 	                int left = menuWidth;
 	                slideView.smoothScrollTo(left, 0);
 	            }
