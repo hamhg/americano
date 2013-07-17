@@ -44,12 +44,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.example.meeting79.MatchActivity"
-            android:label="@string/title_activity_match"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.NoTitleBar" >
-        </activity>
-        <activity
             android:name="com.example.meeting79.ViewControler"
             android:label="@string/title_activity_match"
             android:screenOrientation="portrait"

@@ -57,15 +57,11 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <ScrollView
+    <ListView
+        android:id="@+id/heartList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        >
-
-        <ListView
-            android:id="@+id/heartList"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </ScrollView>
+        android:background="#4d5c6c"
+        android:textColor="#ffffff" />
 
 </LinearLayout>
