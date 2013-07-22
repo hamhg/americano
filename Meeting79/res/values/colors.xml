@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="appBg">#4d5c6c</color>
+    <color name="listOdd">#334d5c6c</color>
+    <color name="listEven">#4d5c6c</color>
+
+    <color name="menuBg">#223344</color>
+    <color name="menuText">#ffffff</color>
+    
+</resources>

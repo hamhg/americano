@@ -6,13 +6,13 @@
     android:orientation="vertical" >
 
     <RelativeLayout
-        android:id="@+id/tabBarHeart"
+        android:id="@+id/tabBarContact"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/slideHeart"
+            android:id="@+id/slideContact"
             android:layout_width="33dp"
             android:layout_height="33dp"
             android:layout_alignParentLeft="true"
@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="내가 받은 하트"
+            android:text="몰래 고백하기"
             android:textColor="#ffffff"
             android:textSize="18dp" />
 
@@ -57,11 +57,44 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <ListView
-        android:id="@+id/heartList"
+    <LinearLayout 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#4d5c6c"
-        android:textColor="#ffffff" />
+        android:orientation="vertical">
+        <TextView 
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="18dp"
+            android:textColor="#ffffff"
+            android:text="고백하세요!"
+            android:gravity="bottom"
+            android:paddingLeft="20dp"/>
+        <TextView 
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:gravity="bottom"
+            android:paddingLeft="20dp"
+            android:text="마음에 드는 사람이 있다면\n주저하지 말고 하트를 보내세요!\n상대방도 당신에게 하트를 보내기 전까지는\n아무것도 노출되지 않아요."/>
+        <LinearLayout 
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_margin="20dp"
+            android:background="#ff9966"
+            android:orientation="vertical">
+            <ImageView 
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="23dp"
+                android:layout_marginBottom="7dp"
+                android:src="@drawable/ic_favorite"/>
+            <TextView 
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="10dp"
+                android:layout_marginLeft="5dp"
+                android:textColor="#ffffff"
+                android:text="주소록에서 찾기"/>
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

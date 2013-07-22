@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#4d5c6c"
+    android:background="@color/appBg"
     android:orientation="vertical"
     tools:context=".MatchActivity" >
 
@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="Meeting79"
+            android:text="@string/app_name"
             android:textColor="#ffffff"
             android:textSize="20dp" />
 
@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:paddingTop="4dp"
-                android:src="@drawable/favorite" />
+                android:src="@drawable/ic_favorite" />
 
             <TextView
                 android:layout_width="wrap_content"

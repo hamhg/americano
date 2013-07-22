@@ -6,13 +6,13 @@
     android:orientation="vertical" >
 
     <RelativeLayout
-        android:id="@+id/tabBarChat"
+        android:id="@+id/tabBarQna"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/slideChat"
+            android:id="@+id/slideQna"
             android:layout_width="33dp"
             android:layout_height="33dp"
             android:layout_alignParentLeft="true"
@@ -26,39 +26,22 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="친구(1)"
+            android:text="문의하기"
             android:textColor="#ffffff"
             android:textSize="18dp" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:gravity="right"
-            android:orientation="horizontal" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:paddingLeft="4dp"
-                android:paddingRight="10dp"
-                android:text="편집"
-                android:textColor="#ffffff"
-                android:textSize="13dp" />
-        </LinearLayout>
     </RelativeLayout>
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbarStyle="insideOverlay">
+        android:orientation="vertical"
+        android:background="#22bbdd">
 
-        <ListView
-            android:id="@+id/chatList"
+        <WebView
+            android:id="@+id/web" 
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </ScrollView>
+            android:layout_height="match_parent"
+            />
+    </LinearLayout>
 
 </LinearLayout>

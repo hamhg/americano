@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,12 +20,17 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.example.adapter.ChatListAdapter;
 import com.example.adapter.HeartListAdapter;
 import com.example.meeting79.SlideView.SizeCallback;
+import com.example.util.DeviceData;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
@@ -43,8 +49,9 @@ public class ViewControler extends Activity {
 	boolean click;
 
 	SlideView slideView;
-	View menu, app, heart, chat;
-	Button slide, slideHeart, slideChat;
+	View menu, app, heart, chat, profile, contact, setting, store, notice, event, qna, help;
+	Button slide, slideHeart, slideChat, slideProfile, slideContact, slideSetting, slideStore, slideNotice, slideEvent, slideQna, slideHelp;
+	WebView noticeView, eventView, qnaView, helpView; 
 
 	View[] changeMenu = new View[2];
 	SizeCallbackForMenu size;
@@ -73,20 +80,70 @@ public class ViewControler extends Activity {
 		app = inflater.inflate(R.layout.activity_match, null);
 		heart = inflater.inflate(R.layout.activity_heart, null);
 		chat = inflater.inflate(R.layout.activity_chat, null);
+		profile = inflater.inflate(R.layout.activity_profile, null);
+		contact = inflater.inflate(R.layout.activity_contact, null);
+		setting = inflater.inflate(R.layout.activity_setting, null);
+		store = inflater.inflate(R.layout.activity_store, null);
+		notice = inflater.inflate(R.layout.activity_notice, null);
+		event = inflater.inflate(R.layout.activity_event, null);
+		qna = inflater.inflate(R.layout.activity_qna, null);
+		help = inflater.inflate(R.layout.activity_help, null);
+		
 		ViewGroup tabBar = (ViewGroup) app.findViewById(R.id.tabBar);
-		ViewGroup tabBarHeart = (ViewGroup) heart
-				.findViewById(R.id.tabBarHeart);
+		ViewGroup tabBarHeart = (ViewGroup) heart.findViewById(R.id.tabBarHeart);
 		ViewGroup tabBarChat = (ViewGroup) chat.findViewById(R.id.tabBarChat);
+		ViewGroup tabBarProfile = (ViewGroup) profile.findViewById(R.id.tabBarProfile);
+		ViewGroup tabBarContact = (ViewGroup) contact.findViewById(R.id.tabBarContact);
+		ViewGroup tabBarSetting = (ViewGroup) setting.findViewById(R.id.tabBarSetting);
+		ViewGroup tabBarStore = (ViewGroup) store.findViewById(R.id.tabBarStore);
+		ViewGroup tabBarNotice = (ViewGroup) notice.findViewById(R.id.tabBarNotice);
+		ViewGroup tabBarEvent = (ViewGroup) event.findViewById(R.id.tabBarEvent);
+		ViewGroup tabBarQna = (ViewGroup) qna.findViewById(R.id.tabBarQna);
+		ViewGroup tabBarHelp = (ViewGroup) help.findViewById(R.id.tabBarHelp);
 
 		slide = (Button) tabBar.findViewById(R.id.slide);
 		slideHeart = (Button) tabBarHeart.findViewById(R.id.slideHeart);
 		slideChat = (Button) tabBarChat.findViewById(R.id.slideChat);
+		slideProfile = (Button) tabBarProfile.findViewById(R.id.slideProfile);
+		slideContact = (Button) tabBarContact.findViewById(R.id.slideContact);
+		slideSetting = (Button) tabBarSetting.findViewById(R.id.slideSetting);
+		slideStore = (Button) tabBarStore.findViewById(R.id.slideStore);
+		slideNotice = (Button) tabBarNotice.findViewById(R.id.slideNotice);
+		slideEvent = (Button) tabBarEvent.findViewById(R.id.slideEvent);
+		slideQna = (Button) tabBarQna.findViewById(R.id.slideQna);
+		slideHelp = (Button) tabBarHelp.findViewById(R.id.slideHelp);
 
 		slide.setOnClickListener(new MenuSlideListener(slideView, menu, app));
-		slideHeart.setOnClickListener(new MenuSlideListener(slideView, menu,
-				heart));
-		slideChat.setOnClickListener(new MenuSlideListener(slideView, menu,
-				chat));
+		slideHeart.setOnClickListener(new MenuSlideListener(slideView, menu, heart));
+		slideChat.setOnClickListener(new MenuSlideListener(slideView, menu,	chat));
+		slideProfile.setOnClickListener(new MenuSlideListener(slideView, menu, profile));
+		slideContact.setOnClickListener(new MenuSlideListener(slideView, menu, contact));
+		slideSetting.setOnClickListener(new MenuSlideListener(slideView, menu, setting));
+		slideStore.setOnClickListener(new MenuSlideListener(slideView, menu, store));
+		slideNotice.setOnClickListener(new MenuSlideListener(slideView, menu, notice));
+		slideEvent.setOnClickListener(new MenuSlideListener(slideView, menu, event));
+		slideQna.setOnClickListener(new MenuSlideListener(slideView, menu, qna));
+		slideHelp.setOnClickListener(new MenuSlideListener(slideView, menu, help));
+		
+		noticeView = (WebView) notice.findViewById(R.id.web);
+		eventView = (WebView) event.findViewById(R.id.web);
+		qnaView = (WebView) qna.findViewById(R.id.web);
+		helpView = (WebView) help.findViewById(R.id.web);
+		
+		noticeView.setWebViewClient(new WebViewClient());
+		eventView.setWebViewClient(new WebViewClient());
+		qnaView.setWebViewClient(new WebViewClient());
+		helpView.setWebViewClient(new WebViewClient());
+		
+		WebSettings noticeSet = noticeView.getSettings();
+		WebSettings eventSet = eventView.getSettings();
+		WebSettings qnaSet = qnaView.getSettings();
+		WebSettings helpSet = helpView.getSettings();
+		
+		noticeSet.setJavaScriptEnabled(true);
+		eventSet.setJavaScriptEnabled(true);
+		qnaSet.setJavaScriptEnabled(true);
+		helpSet.setJavaScriptEnabled(true);
 
 		// Leftmenu Event 등록
 		menuFind = (LinearLayout) menu.findViewById(R.id.menuFind);
@@ -128,6 +185,12 @@ public class ViewControler extends Activity {
 				R.layout.heart_list_item, null);
 		ListView listView = (ListView) heart.findViewById(R.id.heartList);
 		listView.setAdapter(adapter);
+
+		// 채팅 세팅
+		ChatListAdapter chatAdapter = new ChatListAdapter(this,
+				R.layout.chat_list_item, null);
+		ListView chatlistView = (ListView) chat.findViewById(R.id.chatList);
+		chatlistView.setAdapter(chatAdapter);
 	}
 
 	OnClickListener menuClickListener = new OnClickListener() {
@@ -151,39 +214,41 @@ public class ViewControler extends Activity {
 				changeMenu[1] = (View) chat;
 				break;
 			case R.id.menuProfile:
-
+				changeMenu[1] = (View) profile;
 				break;
 			case R.id.menuContact:
-
+				changeMenu[1] = (View) contact;
 				break;
 			case R.id.menuSetting:
-
+				changeMenu[1] = (View) setting;
 				break;
 			case R.id.menuStore:
-
+				changeMenu[1] = (View) store;
 				break;
 			case R.id.menuNotice:
-
+				changeMenu[1] = (View) notice;
+				noticeView.loadUrl("http://m.naver.com/");
 				break;
 			case R.id.menuEvent:
-
+				changeMenu[1] = (View) event;
+				eventView.loadUrl("http://m.kitchen.naver.com/");
 				break;
 			case R.id.menuQna:
-
+				changeMenu[1] = (View) qna;
+				qnaView.loadUrl("https://m.help.naver.com/serviceMain.nhn?type=mail");
 				break;
 			case R.id.menuHelp:
-
+				changeMenu[1] = (View) help;
+				helpView.loadUrl("http://m.help.naver.com/serviceMain.nhn?falias=mo_main_web&type=faq");
 				break;
 			default:
 				break;
-			}
-			;
+			};
 
 			parent.addView(changeMenu[1], slideView.getWidth(),
 					slideView.getHeight());
 			int menuWidth = slideView.getMeasuredWidth();
 			slideView.smoothScrollTo(menuWidth, 0);
-			// slideView.initViews(changeMenu, 1, size);
 
 		}
 	};
@@ -210,7 +275,7 @@ public class ViewControler extends Activity {
 			if (!menuOut) {
 				// Scroll to 0 to reveal menu
 				Log.d("===clicked 1==", "Scroll to right");
-				int left = 70;
+				int left = DeviceData.pxToDp(slideView.getContext(), 45);
 				slideView.smoothScrollTo(left, 0);
 			} else {
 				// Scroll to menuWidth so menu isn't on screen.
@@ -240,6 +305,11 @@ public class ViewControler extends Activity {
 	private void initGmap() {
 		locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		Criteria criteria = new Criteria();
+		/*criteria.setAccuracy(Criteria.ACCURACY_FINE);
+        criteria.setAltitudeRequired(false);
+        criteria.setBearingRequired(false);
+        criteria.setCostAllowed(true);
+        criteria.setPowerRequirement(Criteria.POWER_LOW);*/
 		provider = locationManager.getBestProvider(criteria, false);
 		
 		if (provider == null) {// 사용자가 위치설정동의 안했을 때
@@ -263,16 +333,23 @@ public class ViewControler extends Activity {
 					});
 
 		}
+		//locationManager.requestLocationUpdates(provider, 2000, 10, locationListener);
 		Location location = locationManager.getLastKnownLocation(provider);
-		myPos = new LatLng(location.getLatitude(), location.getLongitude());
+		try {
+			myPos = new LatLng(location.getLatitude(), location.getLongitude());
+		} catch (Exception e) {
+			myPos = new LatLng((double)37.56621, (double)126.9779);
+		}
 		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
 		map.moveCamera(CameraUpdateFactory.newLatLngZoom(myPos, 15));
 		map.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
 		map.getUiSettings().setZoomControlsEnabled(false);
 		map.getUiSettings().setAllGesturesEnabled(false);
 
-		Log.d("ME:", "My Pos - latitude : " + location.getLatitude()
-				+ ", longitude :" + location.getLongitude());
+		try {
+			Log.d("ME:", "My Pos - latitude : " + location.getLatitude() + ", longitude :" + location.getLongitude());
+		} catch (Exception e) {
+		}
 
 		map.setOnMapClickListener(new OnMapClickListener() {
 
@@ -284,6 +361,47 @@ public class ViewControler extends Activity {
 		});
 	}
 
+	private final LocationListener locationListener = new LocationListener() {
+		
+		@Override
+		public void onStatusChanged(String provider, int status, Bundle extras) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		public void onProviderEnabled(String provider) {
+			// TODO Auto-generated method stub
+			
+		}
+		
+		@Override
+		public void onProviderDisabled(String provider) {
+			updateWithNewLocation(null);
+			
+		}
+		
+		@Override
+		public void onLocationChanged(Location location) {
+			updateWithNewLocation(location);
+			
+		}
+	};
+	
+	private void updateWithNewLocation(Location location){
+        
+        if(location != null){
+
+            try {
+            	myPos = new LatLng(location.getLatitude(), location.getLongitude());
+            } catch (Exception e) {
+            }
+            map.moveCamera(CameraUpdateFactory.newLatLngZoom(myPos, 15));
+        }
+
+	} 
+	
+	
 	static class SizeCallbackForMenu implements SizeCallback {
 		int btnWidth;
 		View btnSlide;
